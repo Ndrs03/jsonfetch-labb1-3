@@ -2,9 +2,6 @@ package se.andreas;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -13,18 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsonReader {
-    private static final ObjectMapper mapper = new ObjectMapper();
-
+    private static final String apiUrl = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/17.29/lat/62.39/data.json";
 
     /**
-    * Reads JSON data from a URL and returns a JsonNode
-    * @param stringUrl the URL to read from
+    * Reads JSON data from member stringUrl and returns a JsonNode
     * @return a JsonNode containing the data from the URL
      */
-    private static JsonNode readJsonFromUrl(String stringUrl) {
-        // better exception handeling needed
+    private static JsonNode readJsonFromApi() {
+        // better exception handeling needed, maybe log file?
         try {
-            URL url = new URL(stringUrl);
+            URL url = new URL(apiUrl);
+            ObjectMapper mapper = new ObjectMapper();
             return mapper.readTree(url);
         }  catch (MalformedURLException e) {
             System.err.println("Malformed URL");
@@ -60,7 +56,8 @@ public class JsonReader {
      * @return a map with time and data from the JSON
      */
     public static Map<String, Double> getMapFromKey(String key) {
-        JsonNode jsonData = readJsonFromUrl("https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/17.29/lat/62.39/data.json");
+        JsonNode jsonData = readJsonFromApi();
+
         if (jsonData == null) {
             throw new RuntimeException("Failed to read JSON data");
         }
@@ -68,13 +65,17 @@ public class JsonReader {
         if (timeSeries == null) {
             throw new RuntimeException("Failed to read timeSeries");
         }
+
         Map<String, Double> timeDataMap = new HashMap<>();
-        // do i really need this loop?
+        // enter timeSeries
         for (JsonNode timePoint : timeSeries) {
             JsonNode validTime = timePoint.get("validTime");
             JsonNode parameters = timePoint.get("parameters");
+            // enter parameters
             for (JsonNode parameter : parameters) {
+                // find parameter that matches key
                 if (key.equals(parameter.get("name").asText())) {
+                    // get value for key, stored under values and 0: index
                     double data = parameter.get("values").get(0).asDouble();
                     timeDataMap.put(validTime.asText(), data);
                     break;
@@ -83,8 +84,5 @@ public class JsonReader {
         }
         return timeDataMap;
     }
-
-
-
 
 }
