@@ -41,7 +41,7 @@ public class JsonReader {
      * Returns a map with the data from the
      * @param key the key to search for
      *            t - temperature,
-     *            spp - precipitation in frozen form,
+     *            spp - percent of precipitation in frozen form,
      *            pcat - category of precipitation,
      *            pmin - minimum precipitation intensity,
      *            pmean - mean precipitation intensity,
