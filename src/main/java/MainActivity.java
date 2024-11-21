@@ -15,5 +15,18 @@ public class MainActivity {
             System.out.println("Time: " + key + ", Temperature: " + value);
         }
 
+
+
+
+        // fixed the container insert so if u check breakpoint u can see the object with working -
+        // - maps inside the object and different values for each time key.
+
+
+        WeatherContainer container = new WeatherContainer();
+        container.insertObject("Sundsvall");
+
+
+
+
     }
 }

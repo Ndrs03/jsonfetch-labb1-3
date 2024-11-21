@@ -1,4 +1,7 @@
+import java.util.HashMap;
 import java.util.Map;
+import se.andreas.JsonReader;
+
 
 /**
  * Object class that stores weather objects inside a container. The container is a map with city names as keys and WeatherObjects as values.
@@ -14,7 +17,7 @@ public class WeatherContainer {
      *
      */
     public WeatherContainer() {
-        // Default constructor
+        container = new HashMap<>();
     }
 
     /**
@@ -23,8 +26,10 @@ public class WeatherContainer {
      * @param cityName Name of the city to insert the object for.
      * @param object WeatherObject to insert.
      */
-    private void insertObject(String cityName, WeatherObject object) { // Insert object into container
-        container.put(cityName, object);
+    public void insertObject(String cityName) { // Insert object into container
+        container.put(cityName, new WeatherObject(JsonReader.getMapFromKey("t"), JsonReader.getMapFromKey("ws"),
+                JsonReader.getMapFromKey("tcc_mean"), JsonReader.getMapFromKey("pmean"),
+                JsonReader.getMapFromKey("Wsymb2")));
     }
 
     /**
