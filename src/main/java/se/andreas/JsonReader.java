@@ -32,27 +32,29 @@ public class JsonReader {
     }
 
     /**
-     * Returns a map with the data from the
-     * @param key the key to search for
-     *            t - temperature,
-     *            spp - percent of precipitation in frozen form,
-     *            pcat - category of precipitation,
-     *            pmin - minimum precipitation intensity,
-     *            pmean - mean precipitation intensity,
-     *            pmax - maximum precipitation intensity,
-     *            pmedian - median precipitation intensity,
-     *            tcc_mean - mean value of total cloud cover,
-     *            lcc_mean - mean value of low level cloud cover,
-     *            mcc_mean - mean value of medium level cloud cover,
-     *            hcc_mean - mean value of high level cloud cover,
-     *            msl - air pressure,
-     *            vis - horizontal visibility,
-     *            wd - wind direction,
-     *            ws - wind speed,
-     *            r - relative humidity,
-     *            tstm - thunder probability,
-     *            gust - wind gust speed,
-     *            Wsymb2 - weather symbol
+     * Returns a map with the data from the api
+     * @param key the key to get data for, possible keys are:
+     * <ul>
+     *   <li>t - temperature</li>
+     *   <li>spp - percent of precipitation in frozen form</li>
+     *   <li>pcat - category of precipitation</li>
+     *   <li>pmin - minimum precipitation intensity</li>
+     *   <li>pmean - mean precipitation intensity</li>
+     *   <li>pmax - maximum precipitation intensity</li>
+     *   <li>pmedian - median precipitation intensity</li>
+     *   <li>tcc_mean - mean value of total cloud cover</li>
+     *   <li>lcc_mean - mean value of low level cloud cover</li>
+     *   <li>mcc_mean - mean value of medium level cloud cover</li>
+     *   <li>hcc_mean - mean value of high level cloud cover</li>
+     *   <li>msl - air pressure</li>
+     *   <li>vis - horizontal visibility</li>
+     *   <li>wd - wind direction</li>
+     *   <li>ws - wind speed</li>
+     *   <li>r - relative humidity</li>
+     *   <li>tstm - thunder probability</li>
+     *   <li>gust - wind gust speed</li>
+     *   <li>Wsymb2 - weather symbol</li>
+     * </ul>
      * @return a map with time and data from the JSON
      */
     public static Map<String, Double> getMapFromKey(String key) {
