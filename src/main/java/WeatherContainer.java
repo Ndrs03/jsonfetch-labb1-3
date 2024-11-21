@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
-import se.andreas.JsonReader;
 
+import se.andreas.JsonReader;
 
 /**
  * Object class that stores weather objects inside a container. The container is a map with city names as keys and WeatherObjects as values.
