@@ -5,11 +5,20 @@ import java.util.Map;
  *
  */
 public class WeatherObject {
-    Map<String, Double> temperature; /** Map with time as keys and temperature as values */
-    Map<String, Double> windSpeed; /** Map with time as keys and wind speed as values */
-    Map<String, Double> cloudCover; /** Map with time as keys and cloud cover as values */
-    Map<String, Double> percipitation; /** Map with time as keys and percipitation as values */
-    Map<String, Double> weatherSymbol; /** Map with time as keys and weatherSymbol as values */
+    /** Map with time as keys and temperature as values */
+    Map<String, Double> temperature;
+
+    /** Map with time as keys and wind speed as values */
+    Map<String, Double> windSpeed;
+
+    /** Map with time as keys and cloud cover as values */
+    Map<String, Double> cloudCover;
+
+    /** Map with time as keys and percipitation as values */
+    Map<String, Double> percipitation;
+
+    /** Map with time as keys and weatherSymbol as values */
+    Map<String, Double> weatherSymbol;
 
     /**
      * Constructor to initialize the WeatherObject with the provided data maps.

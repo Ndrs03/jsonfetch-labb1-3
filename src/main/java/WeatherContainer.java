@@ -6,7 +6,8 @@ import java.util.Map;
  * @see WeatherObject
  */
 public class WeatherContainer {
-    Map<String, WeatherObject> container; /** Map with city names as keys and WeatherObjects as values. */
+    /** Map with city names as keys and WeatherObjects as values. */
+    Map<String, WeatherObject> container;
 
     /**
      * Default constructor.
