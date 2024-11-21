@@ -2,6 +2,9 @@ package se.andreas;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -11,6 +14,9 @@ import java.util.Map;
 
 public class JsonReader {
     private static final ObjectMapper mapper = new ObjectMapper();
+    static int apiParameter = 16;
+    // id 127240 är stationen norr om granlo
+    private static String baseUrl = "https://opendata-download-metobs.smhi.se/api/version/latest/parameter/"+ apiParameter +"/station/127240.json";
 
     public static final Map<String, Double> timeTemperatureMap = getTemperatureMap();
 
@@ -54,5 +60,35 @@ public class JsonReader {
             }
         }
         return timeTemperatureMap;
+    }
+
+
+    private String getPeriodNames(String parameterKey, String stationKey) throws IOException, JSONException {
+
+        JsonNode jsonData = readJsonFromUrl("https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/17.29/lat/62.39/data.json");
+
+
+        String periodName = null;
+        for (int i = 0; i < periodsArray.length(); i++) {
+            periodName = periodsArray.getJSONObject(i).getString("key");
+            System.out.println(periodName);
+        }
+
+        return periodName;
+    }
+
+
+    /**
+     * Get the data for the given parameter, station and period.
+     *
+     * @param parameterKey The key for the wanted parameter
+     * @param stationKey The key for the wanted station
+     * @param periodName The name for the wanted period
+     * @return The data
+     * @throws IOException
+     * @throws JSONException
+     */
+    private String getData(String parameterKey, String stationKey, String periodName) throws IOException {
+        return readStringFromUrl(+ "/period/" + periodName + "/data.csv");
     }
 }
