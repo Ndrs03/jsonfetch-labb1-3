@@ -9,5 +9,11 @@ public class MainActivity {
         for (Map.Entry<String, Double> entry : timeTemperatureMap.entrySet()) {
             System.out.println("Time: " + entry.getKey() + ", Temperature: " + entry.getValue());
         }
+
+
+
+        Map<String, WeatherObject> cityWeater = Weather
+
+
     }
 }
