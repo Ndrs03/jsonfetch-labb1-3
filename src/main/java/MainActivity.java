@@ -3,7 +3,7 @@ import se.andreas.JsonReader;
 
 public class MainActivity {
     public static void main(String[] args) {
-        Map<String, Double> timeTemperatureMap = JsonReader.timeTemperatureMap;
+        Map<String, Double> timeTemperatureMap = JsonReader.getMapFromKey("t");
 
         for (Map.Entry<String, Double> entry : timeTemperatureMap.entrySet()) {
             System.out.println("Time: " + entry.getKey() + ", Temperature: " + entry.getValue());

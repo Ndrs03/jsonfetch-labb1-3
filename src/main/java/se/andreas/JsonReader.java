@@ -16,8 +16,6 @@ public class JsonReader {
     private static final ObjectMapper mapper = new ObjectMapper();
 
 
-    public static final Map<String, Double> timeTemperatureMap = getMapFromKey("Wsymb2");
-
     /**
     * Reads JSON data from a URL and returns a JsonNode
     * @param stringUrl the URL to read from
@@ -61,7 +59,7 @@ public class JsonReader {
      *            Wsymb2 - weather symbol
      * @return a map with time and data from the JSON
      */
-    private static Map<String, Double> getMapFromKey(String key) {
+    public static Map<String, Double> getMapFromKey(String key) {
         JsonNode jsonData = readJsonFromUrl("https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/17.29/lat/62.39/data.json");
         if (jsonData == null) {
             throw new RuntimeException("Failed to read JSON data");
