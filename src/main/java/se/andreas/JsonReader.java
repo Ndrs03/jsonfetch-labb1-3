@@ -57,7 +57,6 @@ public class JsonReader {
      */
     public static Map<String, Double> getMapFromKey(String key) {
         JsonNode jsonData = readJsonFromApi();
-
         if (jsonData == null) {
             throw new RuntimeException("Failed to read JSON data");
         }
