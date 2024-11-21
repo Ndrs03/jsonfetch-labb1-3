@@ -1,4 +1,3 @@
-
 import java.util.Map;
 import se.andreas.JsonReader;
 
@@ -10,9 +9,6 @@ public class MainActivity {
             System.out.println("Time: " + entry.getKey() + ", Temperature: " + entry.getValue());
         }
 
-
-
-        Map<String, WeatherObject> cityWeater = Weather
 
 
     }
