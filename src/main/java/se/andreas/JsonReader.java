@@ -1,5 +1,4 @@
 package se.andreas;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,7 +9,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsonReader {
-    private static final String apiUrl = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/17.29/lat/62.39/data.json";
+    private static String lon = "17.29";
+    private static String lat = "62.39";
+    private static final String apiUrl = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/"+lon+"/lat/"+lat+"/data.json";
+
+    /**
+     * Sets the longitude and latitude for the API
+     * @param lon for position
+     * @param lat for position
+     */
+    public static void setLonLat(String lon, String lat) {
+        JsonReader.lon = lon;
+        JsonReader.lat = lat;
+    }
 
     /**
     * Reads JSON data from member stringUrl and returns a JsonNode
