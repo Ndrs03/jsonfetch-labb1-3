@@ -1,8 +1,9 @@
 import java.util.Map;
 
 /**
- * Object class that stores a specific weather object that includes maps with time and as values and temperature, wind speed, cloud cover and percipitation as keys.
+ * Object class that stores a specific object {@code WeatherObject} that includes multiple {@code Map} objects with the time as keys and the values as temperature, wind speed, cloud cover and percipitation.
  *
+ * @see WeatherContainer
  */
 public class WeatherObject {
     /** Map with time as keys and temperature as values */
