@@ -5,36 +5,46 @@ import retrofit2.Retrofit;
 import se.andreas.JsonReader;
 import se.andreas.WeatherData;
 
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import static se.andreas.JsonReader.getWeatherData;
+
 public class MainActivity {
-    private static JsonReader.WeatherApi weatherApi;
+
 
     public static void main(String[] args) {
-        Retrofit retrofit = JsonReader.getClient();
-        weatherApi = retrofit.create(JsonReader.WeatherApi.class);
-        fetchData();
-    }
-
-    private static void fetchData() {
-        Call<WeatherData> call = weatherApi.getWeatherData(JsonReader.lon, JsonReader.lat);
-        call.enqueue(new Callback<>() {
+        JsonReader.getWeatherData(new Callback<>() {
             @Override
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     WeatherData weatherData = response.body();
-                    System.out.println("Approved time: " + weatherData.getApprovedTime());
-                    System.out.println("Reference time: " + weatherData.getReferenceTime());
-                    System.out.println("Time series: " + weatherData.getTimeSeries());
-                    System.out.println("Weather now: " + weatherData.getTimeSeries().get(0).getParameterName());
+
+                    // This needs to be done inside onResponse because it is asynchronous so this is basically another thread right now
+                    Map<String, Double> timeTemperatureMap = weatherData.getMapFromParameterName("t");
+                    // sorted print
+                    SortedSet<String> keys = new TreeSet<>(timeTemperatureMap.keySet());
+                    for (String key : keys) {
+                        Double value = timeTemperatureMap.get(key);
+                        System.out.println("Time: " + key + ", Temperature: " + value);
+                    }
                 } else {
-                    System.out.println("Failed to fetch data");
+                    System.err.println("Failed to fetch weather data");
                 }
             }
 
             @Override
             public void onFailure(Call<WeatherData> call, Throwable t) {
-                System.out.println("Failed to fetch data: " + t.getMessage());
                 t.printStackTrace();
             }
         });
+
+
+
+
+
+
     }
+
 }
