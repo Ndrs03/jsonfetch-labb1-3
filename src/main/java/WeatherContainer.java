@@ -3,14 +3,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import se.andreas.JsonReader;
+import se.andreas.APIfetcher;
 
 /**
  * Object class that stores weather objects {@code WeatherObject} inside a container {@code WeatherContainer}. The container is a map with city names as keys and WeatherObjects as values.
  *
  * @see WeatherObject
  * @see MapMiltiRunner
- * @see JsonReader
+ * @see APIfetcher
  */
 public class WeatherContainer {
     /** {@code Map} with city names as keys and WeatherObjects as values. */
@@ -36,7 +36,7 @@ public class WeatherContainer {
      *
      * @see MapMiltiRunner
      * @see WeatherObject
-     * @see JsonReader
+     * @see APIfetcher
      */
     public void insertObject(String cityName) {
         String[] keys = new String[]{"t", "ws", "tcc_mean", "pmean", "Wsymb2"};
@@ -100,7 +100,7 @@ public class WeatherContainer {
         /**
          * Run method which gets the map from the key.
          * This is done by calling {@code JsonReader} with the key as parameter.
-         * @see JsonReader
+         * @see APIfetcher
          */
         @Override
         public void run() {

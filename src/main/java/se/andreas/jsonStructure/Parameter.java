@@ -2,6 +2,9 @@ package se.andreas.jsonStructure;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
+/**
+ * Class for the parameter from SMHI API
+ */
 public class Parameter {
     @JsonProperty("name")
     private String name;
@@ -18,24 +21,16 @@ public class Parameter {
     @JsonProperty("values")
     private List<Double> values;
 
-    // Getters
-
+    /**
+     * @return The name of the parameter that is measured
+     */
     public String getName() {
         return name;
     }
 
-    public String getLevelType() {
-        return levelType;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
+    /**
+     * @return The values of the parameter
+     */
     public List<Double> getValues() {
         return values;
     }

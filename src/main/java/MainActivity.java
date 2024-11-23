@@ -1,21 +1,18 @@
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import se.andreas.JsonReader;
+import se.andreas.APIfetcher;
 import se.andreas.WeatherData;
 
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static se.andreas.JsonReader.getWeatherData;
-
 public class MainActivity {
 
 
     public static void main(String[] args) {
-        JsonReader.getWeatherData(new Callback<>() {
+        APIfetcher.getWeatherData(new Callback<>() {
             @Override
             public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -39,10 +36,6 @@ public class MainActivity {
                 t.printStackTrace();
             }
         });
-
-
-
-
 
 
     }
