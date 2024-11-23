@@ -1,32 +1,40 @@
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 import se.andreas.JsonReader;
+import se.andreas.WeatherData;
 
 public class MainActivity {
+    private static JsonReader.WeatherApi weatherApi;
+
     public static void main(String[] args) {
-        Map<String, Double> timeTemperatureMap = JsonReader.getMapFromKey("t");
+        Retrofit retrofit = JsonReader.getClient();
+        weatherApi = retrofit.create(JsonReader.WeatherApi.class);
+        fetchData();
+    }
 
-        // sorted print
-        SortedSet<String> keys = new TreeSet<>(timeTemperatureMap.keySet());
-        for (String key : keys) {
-            Double value = timeTemperatureMap.get(key);
-            System.out.println("Time: " + key + ", Temperature: " + value);
-        }
+    private static void fetchData() {
+        Call<WeatherData> call = weatherApi.getWeatherData(JsonReader.lon, JsonReader.lat);
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+                if (response.isSuccessful()) {
+                    WeatherData weatherData = response.body();
+                    System.out.println("Approved time: " + weatherData.getApprovedTime());
+                    System.out.println("Reference time: " + weatherData.getReferenceTime());
+                    System.out.println("Time series: " + weatherData.getTimeSeries());
+                    System.out.println("Weather now: " + weatherData.getTimeSeries().get(0).getParameterName());
+                } else {
+                    System.out.println("Failed to fetch data");
+                }
+            }
 
-
-
-
-        // fixed the container insert so if u check breakpoint u can see the object with working -
-        // - maps inside the object and different values for each time key.
-
-
-        WeatherContainer container = new WeatherContainer();
-        container.insertObject("Sundsvall");
-
-
-
-
+            @Override
+            public void onFailure(Call<WeatherData> call, Throwable t) {
+                System.out.println("Failed to fetch data: " + t.getMessage());
+                t.printStackTrace();
+            }
+        });
     }
 }

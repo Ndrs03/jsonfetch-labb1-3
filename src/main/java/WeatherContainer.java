@@ -104,7 +104,7 @@ public class WeatherContainer {
          */
         @Override
         public void run() {
-            map = JsonReader.getMapFromKey(key);
+            //map = JsonReader.getMapFromKey(key);
         }
 
         /**
