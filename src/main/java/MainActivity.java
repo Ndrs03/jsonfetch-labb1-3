@@ -1,43 +1,18 @@
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import se.andreas.APIfetcher;
-import se.andreas.WeatherData;
-
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 public class MainActivity {
+        public static void main(String[] args) {
+        WeatherContainer weatherContainer = new WeatherContainer();
+        weatherContainer.insertObject("Sundsvall");
 
-
-    public static void main(String[] args) {
-        APIfetcher.getWeatherData(new Callback<>() {
-            @Override
-            public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    WeatherData weatherData = response.body();
-
-                    // This needs to be done inside onResponse because it is asynchronous so this is basically another thread right now
-                    Map<String, Double> timeTemperatureMap = weatherData.getMapFromParameterName("t");
-                    // sorted print
-                    SortedSet<String> keys = new TreeSet<>(timeTemperatureMap.keySet());
-                    for (String key : keys) {
-                        Double value = timeTemperatureMap.get(key);
-                        System.out.println("Time: " + key + ", Temperature: " + value);
-                    }
-                } else {
-                    System.err.println("Failed to fetch weather data");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<WeatherData> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-
+        WeatherObject weatherObject = weatherContainer.getObject("Sundsvall");
+        if (weatherObject != null) {
+            // Process and print the weather data
+            System.out.println("Temperature: " + weatherObject.getTemperature());
+            System.out.println("Wind Speed: " + weatherObject.getWindSpeed());
+            System.out.println("Cloud Cover: " + weatherObject.getCloudCover());
+            System.out.println("Percipitation: " + weatherObject.getPercipitation());
+            System.out.println("Weather Symbol: " + weatherObject.getPercipitation());
+        } else {
+            System.out.println("Weather data for Stockholm not found.");
+        }
     }
-
 }

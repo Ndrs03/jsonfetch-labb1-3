@@ -1,119 +1,121 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import se.andreas.APIfetcher;
+import se.andreas.WeatherData;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
- * Object class that stores weather objects {@code WeatherObject} inside a container {@code WeatherContainer}. The container is a map with city names as keys and WeatherObjects as values.
- *
+ * Container class that stores a specific object {@code WeatherObject} that includes multiple {@code Map} objects with the time as keys and the values as temperature, wind speed, cloud cover and precipitation.
+ * Uses the {@code APIfetcher} to fetch the data from the SMHI API.
+ * This uses retrofit to fetch the data asynchronously.
+ * This class is used as a handler for the {@code WeatherObject} class and the {@code APIfetcher} class.
  * @see WeatherObject
- * @see MapMiltiRunner
  * @see APIfetcher
  */
 public class WeatherContainer {
-    /** {@code Map} with city names as keys and WeatherObjects as values. */
+    /** Map with city name as keys and the {@code WeatherObject} as values */
     Map<String, WeatherObject> container;
 
     /**
-     * Constructor which implements the container as a {@code HashMap}.
-     *
+     * Constructor to initialize the {@code WeatherContainer} with an empty map.
      */
     public WeatherContainer() {
         container = new HashMap<>();
     }
 
     /**
-     * Inserts object {@code WeatherObject} into container.
-     * This is done by creating runners and threads for each key in the object.
-     * The runners are then started and the threads are joined.
-     * The object is then inserted into the container after calling the constructor for {@code WeatherObject} with
-     * the getters of the runners as parameters.
-     * This is alter pushed into the container with the city name as key.
-     *
-     * @param cityName Name of the city to insert the object for.
-     *
-     * @see MapMiltiRunner
-     * @see WeatherObject
-     * @see APIfetcher
+     * Insert a new {@code WeatherObject} into the container with the provided city name.
+     * This fetches the data from the SMHI API and stores it in the {@code WeatherObject}.
+     * This is done asynchronously by using multiple threads.
+     * The function is aslo used as the handler for the {@code APIfetcher} class.
+     * @param cityName The name of the city to fetch the weather data for
      */
     public void insertObject(String cityName) {
-        String[] keys = new String[]{"t", "ws", "tcc_mean", "pmean", "Wsymb2"};
-        List<MapMiltiRunner> runners = new ArrayList<>();
-        List<Thread> threads = new ArrayList<>();
+        String[] keys = new String[]{"t", "ws", "tcc_mean", "pmean", "Wsymb2"}; // Parameters to fetch
+        Map<String, Double>[] maps = new Map[keys.length];  // Maps to store the data
+        CountDownLatch latch = new CountDownLatch(keys.length); // Latch to wait for all threads to finish
+        boolean[] errors = new boolean[keys.length];    // Array to store if any of the threads failed
 
-        for (String key : keys) {   // Create runners and threads.
-            MapMiltiRunner runner = new MapMiltiRunner(key);
-            runners.add(runner);
-            threads.add(new Thread(runner));
+        for (int i = 0; i < keys.length; i++) { // Create a new map for each parameter
+            maps[i] = new HashMap<>();
+            new MapMiltiRunner(keys[i], maps[i], latch, errors, i).run();
         }
 
-        for (Thread thread : threads) { // Start threads.
-            thread.start();
+        try {   // Wait for all threads to finish
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        for (Thread thread : threads) { // Wait for threads to finish.
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        for (boolean error : errors) {  // Check if any of the threads failed
+            if (error) {
+                System.err.println("Failed to fetch weather data for " + cityName);
+                return;
             }
         }
 
-        container.put(cityName, new WeatherObject(  // Insert object into container by calling object constructor.
-                runners.get(0).getResult(),
-                runners.get(1).getResult(),
-                runners.get(2).getResult(),
-                runners.get(3).getResult(),
-                runners.get(4).getResult()
+        container.put(cityName, new WeatherObject(  // Insert the new WeatherObject into the container
+                maps[0],
+                maps[1],
+                maps[2],
+                maps[3],
+                maps[4]
         ));
     }
 
     /**
-     * Get object from container.
-     *
-     * @param cityName Name of the city to get the object for.
-     * @return {@code WeatherObject} for the city.
+     * Get the {@code WeatherObject} from the container with the provided city name.
+     * @param cityName The name of the city to get the weather data for.
+     * @return The {@code WeatherObject} for the provided city name.
      */
-    public WeatherObject getObject(String cityName) {return container.get(cityName);}
+    public WeatherObject getObject(String cityName) {
+        return container.get(cityName);
+    }
 
-    /**
-     * Inner class that implements {@code Runnable} to get a {@code Map} from a key.
-     * The {@code Map} is stored as a field and can be retrieved with {@code getResult()}.
-     */
-    private class MapMiltiRunner implements Runnable {
-        /** Key which we get data for. */
-        private final String key;
-        /** Map with time as keys and data as values. */
-        private Map<String, Double> map;
+/**
+ * Runnable class to fetch the weather data for a specific parameter.
+ * This is used to fetch the data asynchronously and therefore uses multiple threads.
+ * The class itself is using override to implement a costumized retrofit callback.
+ *
+ * @see retrofit2.Retrofit
+ * @see Callback
+ * @see Response
+ */
+    private record MapMiltiRunner(String key, Map<String, Double> map, CountDownLatch latch, boolean[] errors,
+                                  int index) implements Runnable {
 
         /**
-         * Constructor to initialize the runner with a key.
-         *
-         * @param para string key to use for json reader call.
-         */
-        public MapMiltiRunner(String para) {
-            this.key = para;
-        }
-
-        /**
-         * Run method which gets the map from the key.
-         * This is done by calling {@code JsonReader} with the key as parameter.
-         * @see APIfetcher
+         * Fetch the weather data for a specific parameter.
+         * This is done asynchronously by using multiple threads.
+         * The function calls {@code APIfetcher} class and uses the retrofit to fetch the data.
+         * The function also checks if the data was fetched successfully and stores the data in the map.
+         * This is done via api call to the retrofit client.
          */
         @Override
         public void run() {
-            //map = JsonReader.getMapFromKey(key);
-        }
-
-        /**
-         * Getter for the requested map.
-         *
-         * @return {@code Map} with time as keys and data as values.
-         */
-        public Map<String, Double> getResult() {
-            return map;
+            APIfetcher.getWeatherData(new Callback<>() {
+                @Override
+                public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+                    if (!response.isSuccessful() && response.body() == null) {
+                        errors[index] = true;
+                        latch.countDown();
+                        return;
+                    }
+                    WeatherData weatherData = response.body();
+                    map.putAll(weatherData.getMapFromParameterName(key));
+                    latch.countDown();
+                }
+                @Override
+                public void onFailure(Call<WeatherData> call, Throwable t) {
+                    System.err.println("Failed to fetch weather data: " + t.getMessage());
+                    errors[index] = true;
+                    latch.countDown();
+                }
+            });
         }
     }
 }
