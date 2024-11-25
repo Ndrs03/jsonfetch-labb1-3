@@ -34,7 +34,7 @@ public class WeatherContainer {
      * The function is aslo used as the handler for the {@code APIfetcher} class.
      * @param cityName The name of the city to fetch the weather data for
      */
-    public void insertObject(String cityName) {
+    public synchronized void insertObject(String cityName) {
         String[] keys = new String[]{"t", "ws", "tcc_mean", "pmean", "Wsymb2"}; // Parameters to fetch
         Map<String, Double>[] maps = new Map[keys.length];  // Maps to store the data
         CountDownLatch latch = new CountDownLatch(keys.length); // Latch to wait for all threads to finish
@@ -72,8 +72,20 @@ public class WeatherContainer {
      * @param cityName The name of the city to get the weather data for.
      * @return The {@code WeatherObject} for the provided city name.
      */
-    public WeatherObject getObject(String cityName) {
+    public synchronized WeatherObject getObject(String cityName) {
         return container.get(cityName);
+    }
+
+    /**
+     * Update the {@code WeatherObject} in the container with the provided city name.
+     * This fetches the data from the SMHI API and stores it in the {@code WeatherObject}.
+     * This is done asynchronously by using multiple threads.
+     * The function is aslo used as the handler for the {@code APIfetcher} class.
+     * @param cityName The name of the city to fetch the weather data for
+     */
+    public synchronized void updateObject(String cityName) {
+        container.remove(cityName);
+        insertObject(cityName);
     }
 
 /**
